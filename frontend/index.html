@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>Real-time Chat</title>
 </head>
 <body>
@@ -31,7 +32,7 @@
                 return;
             }
 
-            socket = new WebSocket(`ws://${location.host}/ws/${username}`);
+            socket = new WebSocket(`ws://${location.hostname}:80/ws/${username}`);
 
             socket.onopen = () => {
                 chatbox.innerHTML += "<i>Подключено к серверу</i><br>";

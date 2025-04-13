@@ -1,10 +1,37 @@
+networks:
+  dev:
+
 services:
   backend:
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile
     container_name: chat-backend
-    ports:
-      - "8000:8000"
     volumes:
-      - .:/app
+      - ./backend/:/app
+    networks:
+      - dev
+
+  frontend:
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: chat-frontend
+    volumes:
+      - ./frontend/:/usr/share/nginx/html
+    networks:
+      - dev
+
+  nginx:
+    image: nginx:stable-alpine
+    container_name: nginx-chat
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - dev

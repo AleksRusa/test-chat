@@ -3,11 +3,9 @@ from fastapi import WebSocketDisconnect
 from fastapi import FastAPI, WebSocket, Request
 from typing import List
 from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
-
-templates = Jinja2Templates(directory="templates")
 
 # Список подключенных клиентов
 connected_clients = []
@@ -45,11 +43,18 @@ async def websocket_endpoint(websocket: WebSocket, username: str):
                 connected_clients.remove(client)
                 break
 
-
-# Веб-страница для входа в чат
-@app.get("/", response_class=HTMLResponse)
-async def chat_interface(request: Request):
-    return templates.TemplateResponse("chat.html", {"request": request})
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000",
+        "http://localhost",
+        # "http://31.129.43.117",
+        # "https://site-test-deploy1.ru",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 if __name__ == "__main__":
     uvicorn.run(

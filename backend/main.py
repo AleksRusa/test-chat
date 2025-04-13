@@ -48,6 +48,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:3000",
         "http://localhost",
+        "http://176.114.79.182"
         # "http://31.129.43.117",
         # "https://site-test-deploy1.ru",
     ],

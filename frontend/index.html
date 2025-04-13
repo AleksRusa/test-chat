@@ -32,7 +32,7 @@
                 return;
             }
 
-            socket = new WebSocket(`ws://${location.hostname}:80/ws/${username}`);
+            socket = new WebSocket(`ws://176.114.79.182/ws/${username}`);
 
             socket.onopen = () => {
                 chatbox.innerHTML += "<i>Подключено к серверу</i><br>";

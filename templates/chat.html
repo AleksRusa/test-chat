@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Real-time Chat</title>
+</head>
+<body>
+    <h1>Real-time Chat</h1>
+
+    <div>
+        <label for="username">Введите ваше имя: </label>
+        <input type="text" id="username" required>
+        <button onclick="connectToChat()">Подключиться</button>
+    </div>
+
+    <div id="chatbox" style="border: 1px solid #ccc; width: 300px; height: 200px; overflow-y: scroll; margin-top: 10px;"></div>
+
+    <div>
+        <input type="text" id="message" placeholder="Введите сообщение..." required>
+        <button onclick="sendMessage()">Отправить</button>
+    </div>
+
+    <script>
+        let socket;
+        let username;
+        const chatbox = document.getElementById("chatbox");
+
+        function connectToChat() {
+            username = document.getElementById("username").value.trim();
+            if (!username) {
+                alert("Введите имя!");
+                return;
+            }
+
+            socket = new WebSocket(`ws://${location.host}/ws/${username}`);
+
+            socket.onopen = () => {
+                chatbox.innerHTML += "<i>Подключено к серверу</i><br>";
+            };
+
+            socket.onmessage = function(event) {
+                chatbox.innerHTML += event.data + "<br>";
+                chatbox.scrollTop = chatbox.scrollHeight;
+            };
+
+            socket.onerror = (e) => {
+                console.error("Ошибка WebSocket", e);
+                chatbox.innerHTML += "<i>Ошибка подключения</i><br>";
+            };
+
+            socket.onclose = () => {
+                chatbox.innerHTML += "<i>Соединение закрыто</i><br>";
+            };
+        }
+
+        function sendMessage() {
+            const message = document.getElementById("message").value.trim();
+            if (socket && message) {
+                socket.send(message);
+                document.getElementById("message").value = "";
+            }
+        }
+    </script>
+</body>
+</html>
